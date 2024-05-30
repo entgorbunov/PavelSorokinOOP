@@ -1,26 +1,45 @@
 package com.oop;
 
-import com.oop.counter.*;
-import com.oop.visitor.MultithreadingSiteVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Main {
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
     public static void main(String[] args) {
-        SiteVisitCounter atomicIntegerCounter = new AtomicIntegerCounter();
-        SiteVisitCounter reentrantLockCounter = new ReentrantLockCounter();
-        SiteVisitCounter synchronizedBlockCounter = new SynchronizedBlockCounter();
-        SiteVisitCounter unSynchronizedCounter = new UnsynchronizedCounter();
-        SiteVisitCounter volatileCounter = new VolatileCounter();
 
-        MultithreadingSiteVisitor atomicVisitor = new MultithreadingSiteVisitor(atomicIntegerCounter);
-        MultithreadingSiteVisitor lockVisitor = new MultithreadingSiteVisitor(reentrantLockCounter);
-        MultithreadingSiteVisitor synchVisitor = new MultithreadingSiteVisitor(synchronizedBlockCounter);
-        MultithreadingSiteVisitor unSynchVisitor = new MultithreadingSiteVisitor(unSynchronizedCounter);
-        MultithreadingSiteVisitor volatileVisitor = new MultithreadingSiteVisitor(volatileCounter);
+        DataProcessor dataProcessor = new DataProcessor();
 
-        atomicVisitor.visitMultithread(100, "atomicVisitor");
-        lockVisitor.visitMultithread(100, "lockVisitor");
-        synchVisitor.visitMultithread(100, "synchVisitor");
-        unSynchVisitor.visitMultithread(100, "unSynchVisitor");
-        volatileVisitor.visitMultithread(100, "volatileVisitor");
+        for (int i = 0; i < 100; i++) {
+            List<Integer> integerList = new ArrayList<>();
+            for (int j = 0; j < 10; j++) {
+                integerList.add(j);
+            }
+            dataProcessor.submitTask(integerList);
+        }
+
+        while (dataProcessor.getTaskCount() > 0) {
+            logger.info("Active tasks: {}", dataProcessor.getTaskCount());
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.error("Thread was interrupted", e);
+            }
+        }
+
+        for (int i = 0; i < 100; i++) {
+            String taskName = "task " + i;
+            dataProcessor.getTaskResult(taskName).ifPresent(result -> {
+                logger.info("Result of {}: {}", taskName, result);
+            });
+        }
+        dataProcessor.shutDown();
     }
+
 }
