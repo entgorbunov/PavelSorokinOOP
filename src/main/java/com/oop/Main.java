@@ -35,6 +35,7 @@ public class Main {
         List<Order> ordersWithChildrenProducts = customers.stream()
                 .flatMap(customer -> customer.getOrders().stream())
                 .filter(order -> order.getProducts().stream().anyMatch(product -> product.getCategory().equals("Детские игрушки")))
+                .distinct()
                 .toList();
         //Получите список продуктов из категории "Toys" и примените скидку 10% и получите сумму всех продуктов.
         BigDecimal sumOfDiscountedToys = customers.stream()
@@ -42,6 +43,7 @@ public class Main {
                 .flatMap(order -> order.getProducts().stream())
                 .filter(product -> product.getCategory().equals("Игрушки"))
                 .map(product -> product.getPrice().multiply(new BigDecimal("0.90")))
+                .distinct()
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         //Получите список продуктов, заказанных клиентом второго уровня между 01-фев-2021 и 01-апр-2021.
         List<Product> productsOrderedByLevel2 = customers.stream()
@@ -49,6 +51,7 @@ public class Main {
                 .flatMap(customer -> customer.getOrders().stream())
                 .filter(order -> !order.getOrderDate().isBefore(LocalDate.of(2021, 2, 1)) && !order.getOrderDate().isAfter(LocalDate.of(2021, 4, 1)))
                 .flatMap(order -> order.getProducts().stream())
+                .distinct()
                 .toList();
 
 
@@ -59,6 +62,7 @@ public class Main {
                 .filter(product -> product.getCategory().equals("Книги"))
                 .sorted(Comparator.comparing(Product::getPrice))
                 .limit(2)
+                .distinct()
                 .toList();
 
         // Получите 3 самых последних сделанных заказа.
@@ -74,6 +78,7 @@ public class Main {
                 .filter(order -> order.getOrderDate().isEqual(LocalDate.of(2021, 3, 15)))
                 .peek(order -> System.out.println("Номер заказа: " + order.getId()))
                 .flatMap(order -> order.getProducts().stream())
+                .distinct()
                 .toList();
 
         // Рассчитайте общую сумму всех заказов, сделанных в феврале 2021.
@@ -82,6 +87,7 @@ public class Main {
                 .filter(order -> order.getOrderDate().getMonthValue() == 2 && order.getOrderDate().getYear() == 2021)
                 .flatMap(order -> order.getProducts().stream())
                 .map(Product::getPrice)
+                .distinct()
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // Рассчитайте средний платеж по заказам, сделанным 14-марта-2021.
@@ -90,6 +96,7 @@ public class Main {
                 .filter(order -> order.getOrderDate().isEqual(LocalDate.of(2021, 3, 14)))
                 .flatMap(order -> order.getProducts().stream())
                 .mapToDouble(product -> product.getPrice().doubleValue())
+                .distinct()
                 .average();
 
         // Получите набор статистических данных (сумма, среднее, максимум, минимум, количество) для всех продуктов категории "Книги".
@@ -98,6 +105,7 @@ public class Main {
                 .flatMap(order -> order.getProducts().stream())
                 .filter(product -> product.getCategory().equals("Книги"))
                 .mapToDouble(product -> product.getPrice().doubleValue())
+                .distinct()
                 .summaryStatistics();
 
         // Получите данные Map<Long, Integer> → key - id заказа, value - кол-во товаров в заказе
