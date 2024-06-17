@@ -1,4 +1,4 @@
-package com.oop;
+package com.oop.streams;
 
 import java.time.LocalDate;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package com.oop;
+package com.oop.streams;
 
 import java.util.Objects;
 import java.util.Set;

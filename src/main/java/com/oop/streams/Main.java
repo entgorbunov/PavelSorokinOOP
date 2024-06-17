@@ -1,4 +1,4 @@
-package com.oop;
+package com.oop.streams;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
