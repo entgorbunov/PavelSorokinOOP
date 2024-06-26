@@ -1,9 +1,9 @@
-package com.oop.spring.service;
+package com.spring.service;
 
-import com.oop.spring.entity.Account;
-import com.oop.spring.entity.User;
-import com.oop.spring.service.account.impl.AccountService;
-import com.oop.spring.service.user.impl.UserService;
+import com.spring.entity.Account;
+import com.spring.entity.User;
+import com.spring.service.account.impl.AccountService;
+import com.spring.service.user.impl.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +13,9 @@ import java.util.Scanner;
 
 @Component
 public class OperationsConsoleListener {
-    private UserService userService;
-    private AccountService accountService;
-    private Scanner scanner;
+    private final UserService userService;
+    private final AccountService accountService;
+    private final Scanner scanner;
 
     public OperationsConsoleListener(UserService userService, AccountService accountService) {
         this.userService = userService;

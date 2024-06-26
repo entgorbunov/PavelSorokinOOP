@@ -1,6 +1,6 @@
-package com.oop.spring.service.account;
+package com.spring.service.account;
 
-import com.oop.spring.entity.Account;
+import com.spring.entity.Account;
 
 import java.math.BigDecimal;
 

@@ -1,8 +1,8 @@
-package com.oop.spring;
+package com.spring;
 
-import com.oop.spring.service.OperationsConsoleListener;
-import com.oop.spring.service.account.impl.AccountService;
-import com.oop.spring.service.user.impl.UserService;
+import com.spring.service.OperationsConsoleListener;
+import com.spring.service.account.impl.AccountService;
+import com.spring.service.user.impl.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

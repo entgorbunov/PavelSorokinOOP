@@ -1,6 +1,6 @@
-package com.oop.spring;
+package com.spring;
 
-import com.oop.spring.service.OperationsConsoleListener;
+import com.spring.service.OperationsConsoleListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {

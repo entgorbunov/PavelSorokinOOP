@@ -1,4 +1,4 @@
-package com.oop.spring.entity;
+package com.spring.entity;
 
 import lombok.*;
 import org.springframework.stereotype.Component;

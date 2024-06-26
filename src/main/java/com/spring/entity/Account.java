@@ -1,4 +1,4 @@
-package com.oop.spring.entity;
+package com.spring.entity;
 
 import lombok.*;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public class Account {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
-        return id == account.id;
+        return Objects.equals(id, account.id);
     }
 
     @Override

@@ -1,6 +1,6 @@
-package com.oop.spring.service.user;
+package com.spring.service.user;
 
-import com.oop.spring.entity.User;
+import com.spring.entity.User;
 
 import java.util.List;
 
