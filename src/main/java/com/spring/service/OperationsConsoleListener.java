@@ -1,121 +1,73 @@
 package com.spring.service;
 
-import com.spring.entity.Account;
-import com.spring.entity.User;
+import com.spring.command.Command;
+import com.spring.command.CommandFactory;
+import com.spring.command.CommandType;
 import com.spring.service.account.impl.AccountService;
 import com.spring.service.user.impl.UserService;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Scanner;
 
 @Component
 public class OperationsConsoleListener {
-    private final UserService userService;
-    private final AccountService accountService;
+
+    private static final Logger logger = LoggerFactory.getLogger(OperationsConsoleListener.class);
+    private final CommandFactory commandFactory;
     private final Scanner scanner;
+    private boolean isRunning = true;
 
     public OperationsConsoleListener(UserService userService, AccountService accountService) {
-        this.userService = userService;
-        this.accountService = accountService;
         this.scanner = new Scanner(System.in);
+        this.commandFactory = new CommandFactory(userService, accountService, scanner);
     }
 
     @PostConstruct
     public void start() {
-        while (true) {
-            System.out.println("Please enter one of operation type: ");
-            String command = scanner.nextLine();
+        logger.info("Starting Operations Console Listener");
+        printWelcomeMessage();
+
+        while (isRunning) {
+            logger.info("Waiting for user input");
+            logger.info("Please enter one of operation types: {}", Arrays.toString(CommandType.values()));
+            logger.info("Or type 'EXIT' to quit the application");
+
+            String commandString = scanner.nextLine().trim().toUpperCase();
+
+            if ("EXIT".equals(commandString)) {
+                isRunning = false;
+                logger.info("Exiting application");
+                continue;
+            }
 
             try {
-                switch (command) {
-                    case "USER_CREATE":
-                        createUser();
-                        break;
-                    case "SHOW_ALL_USERS":
-                        showAllUsers();
-                        break;
-                    case "ACCOUNT_CREATE":
-                        createAccount();
-                        break;
-                    case "ACCOUNT_CLOSE":
-                        closeAccount();
-                        break;
-                    case "ACCOUNT_DEPOSIT":
-                        deposit();
-                        break;
-                    case "ACCOUNT_TRANSFER":
-                        transfer();
-                        break;
-                    case "ACCOUNT_WITHDRAW":
-                        withdraw();
-                        break;
-                    default:
-                        System.out.println("Unknown command: " + command);
-                }
-
+                CommandType commandType = CommandType.valueOf(commandString);
+                Command command = commandFactory.createCommand(commandType);
+                logger.info("Executing command: {}", commandType);
+                command.execute();
+            } catch (IllegalArgumentException e) {
+                logger.warn("Unknown command: {}", commandString);
+                logger.info("Unknown command: {}", commandString);
             } catch (Exception e) {
-                System.out.println("Error executing command " + command + ": error=" + e.getMessage());
+                logger.error("Error executing command {}: {}", commandString, e.getMessage(), e);
+                logger.info("Error executing command {}: {}", commandString, e.getMessage());
+                logger.info("Please try again or contact support if the problem persists.");
             }
-            }
+        }
+
+        scanner.close();
+        logger.info("Thank you for using our application. Goodbye!");
     }
 
-    private void createUser() {
-        System.out.println("Enter login for new user:");
-        String login = scanner.nextLine();
-        User user = userService.createUser(login);
-        System.out.println("User created: " + user);
-    }
-
-    private void showAllUsers() {
-        System.out.println("List of users:");
-        List<User> users = userService.getAllUsers();
-        users.forEach(System.out::println);
-    }
-
-    private void createAccount() {
-        System.out.println("Enter login for new account:");
-        Long userId = Long.parseLong(scanner.nextLine());
-        Account account = accountService.createAccount(userId);
-        System.out.println("New account created with ID: " + account.getId() + " for user: " + userService.getUserById(userId).getLogin());
-
-    }
-
-    private void deposit() {
-        System.out.println("Enter account ID:");
-        Long accountId = Long.parseLong(scanner.nextLine());
-        System.out.println("Enter amount to deposit:");
-        BigDecimal amount = new BigDecimal(scanner.nextLine());
-        accountService.deposit(accountId, amount);
-        System.out.println("Amount " + amount + " deposited to account ID: " + accountId);
-    }
-
-    private void transfer() {
-        System.out.println("Enter source account ID:");
-        Long sourceAccountId = Long.parseLong(scanner.nextLine());
-        System.out.println("Enter target account ID:");
-        Long targetAccountId = Long.parseLong(scanner.nextLine());
-        System.out.println("Enter amount to transfer:");
-        BigDecimal amount = new BigDecimal(scanner.nextLine());
-        accountService.transfer(sourceAccountId, targetAccountId, amount);
-        System.out.println("Amount " + amount + " transferred from account ID " + sourceAccountId + " to account ID " + targetAccountId + ".");
-    }
-
-    private void withdraw() {
-        System.out.println("Enter account ID to withdraw from:");
-        Long accountId = Long.parseLong(scanner.nextLine());
-        System.out.println("Enter amount to withdraw:");
-        BigDecimal amount = new BigDecimal(scanner.nextLine());
-        accountService.withdraw(accountId, amount);
-        System.out.println("Amount " + amount + " withdrawn from account ID: " + accountId);
-    }
-
-    private void closeAccount() {
-        System.out.println("Enter account ID to close:");
-        Long accountId = Long.parseLong(scanner.nextLine());
-        accountService.closeAccount(accountId);
-        System.out.println("Account with ID " + accountId + " has been closed.");
+    private void printWelcomeMessage() {
+        logger.info("Welcome to the Banking Operations Console!");
+        logger.info("Available commands: {}", Arrays.toString(CommandType.values()));
+        logger.info("Type a command to execute the corresponding operation.");
+        logger.info("Type 'EXIT' to quit the application.");
+        logger.info("----------------------------------------");
     }
 }
