@@ -4,28 +4,45 @@ import lombok.*;
 import org.springframework.stereotype.Component;
 
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 @Setter
 @Getter
 @Component
+@Entity
+@Table(name = "accounts")
 public class Account {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Long id;
-    private final Long userId;
+    @Column(precision = 19, scale = 2)
     private BigDecimal moneyAmount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Version
+    private Long version;
 
 
     @Override
     public String toString() {
         return "Account{" +
                "id=" + id +
-               ", userId=" + userId +
                ", moneyAmount=" + moneyAmount +
+               ", user=" + user +
                '}';
     }
+
+
 
     @Override
     public boolean equals(Object o) {

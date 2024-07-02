@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/pavelsorokinhomework</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">s9td3ixh</property>
+
+        <property name="hibernate.hikari.dataSourceClassName">org.postgresql.ds.PGSimpleDataSource</property>
+        <property name="hibernate.hikari.dataSource.user">postgres</property>
+        <property name="hibernate.hikari.dataSource.password">s9td3ixh</property>
+        <property name="hibernate.hikari.dataSource.databaseName">pavelsorokinhomework</property>
+        <property name="hibernate.hikari.maximumPoolSize=30"/>
+        <property name="hibernate.hikari.minimumIdle=10"/>
+        <property name="hibernate.hikari.idleTimeout=300000"/>
+        <property name="hibernate.hikari.connectionTimeout=20000"/>
+
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
+
+        <mapping class="com.spring.entity.User"/>
+        <mapping class="com.spring.entity.Account"/>
+    </session-factory>
+</hibernate-configuration>
